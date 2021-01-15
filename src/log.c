@@ -136,8 +136,7 @@ static void init_event(log_Event *ev, void *udata) {
   ev->udata = udata;
 }
 
-
-void log_log(int level, const char *file, int line, const char *fmt, ...) {
+void log_log_va(int level, const char *file, int line, const char *fmt, va_list ap) {
   log_Event ev = {
     .fmt   = fmt,
     .file  = file,
@@ -149,7 +148,7 @@ void log_log(int level, const char *file, int line, const char *fmt, ...) {
 
   if (!L.quiet && level >= L.level) {
     init_event(&ev, stderr);
-    va_start(ev.ap, fmt);
+    va_copy(ev.ap, ap);
     stdout_callback(&ev);
     va_end(ev.ap);
   }
@@ -158,11 +157,20 @@ void log_log(int level, const char *file, int line, const char *fmt, ...) {
     Callback *cb = &L.callbacks[i];
     if (level >= cb->level) {
       init_event(&ev, cb->udata);
-      va_start(ev.ap, fmt);
+      va_copy(ev.ap, ap);
       cb->fn(&ev);
       va_end(ev.ap);
     }
   }
 
   unlock();
+}
+
+void log_log(int level, const char *file, int line, const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  log_log_va(level, file, line, fmt, ap);
+  va_end(ap);
+
 }
