@@ -4,6 +4,12 @@ A simple logging library implemented in C99
 ![screenshot](https://cloud.githubusercontent.com/assets/3920290/23831970/a2415e96-0723-11e7-9886-f8f5d2de60fe.png)
 
 
+## Customizations by gpaglia (gianni@gmaglia.com)
+
+* added a log_log_va function to allow dynamic creation of var arg list, needed by libraries exposing a log callback themselves
+* added an enum for log levels
+
+
 ## Usage
 **[log.c](src/log.c?raw=1)** and **[log.h](src/log.h?raw=1)** should be dropped
 into an existing project and compiled along with it. The library provides 6
